@@ -5,6 +5,7 @@ import 'package:flame/game.dart';
 import 'package:flappybirdapp/components/background.dart';
 import 'package:flappybirdapp/components/bird.dart';
 import 'package:flappybirdapp/components/ground.dart';
+import 'package:flappybirdapp/components/pipe_manager.dart';
 import 'package:flappybirdapp/constants.dart';
 import 'package:flutter/material.dart';
 
@@ -23,6 +24,7 @@ class FlappyBirdGame extends FlameGame with TapDetector, HasCollisionDetection {
   late Bird bird;
   late Background background;
   late Ground ground;
+  late PipeManager pipeManager;
 
   /*
   
@@ -43,6 +45,10 @@ class FlappyBirdGame extends FlameGame with TapDetector, HasCollisionDetection {
     // load ground
     ground = Ground();
     add(ground);
+
+    // load pipes
+    pipeManager = PipeManager();
+    add(pipeManager);
   }
 
   @override
