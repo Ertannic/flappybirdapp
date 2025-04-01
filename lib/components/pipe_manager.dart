@@ -20,7 +20,6 @@ class PipeManager extends Component with HasGameRef<FlappyBirdGame> {
   void update(double dt) {
     // generate new pipe at given interval
     pipeSpawnTime += dt;
-    const double pipeInterval = 2;
 
     if (pipeSpawnTime > pipeInterval) {
       pipeSpawnTime = 0;
@@ -36,9 +35,7 @@ class PipeManager extends Component with HasGameRef<FlappyBirdGame> {
 
   void spawnPipe() {
     final double screenHeight = gameRef.size.y;
-    const double pipeGap = 150;
-    const double minPipeHeight = 50;
-    const double pipeWidth = 60;
+
 
     /*
     
