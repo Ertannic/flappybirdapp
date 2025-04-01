@@ -1,13 +1,14 @@
 import 'dart:async';
-
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flappybirdapp/components/background.dart';
 import 'package:flappybirdapp/components/bird.dart';
 import 'package:flappybirdapp/components/ground.dart';
 import 'package:flappybirdapp/components/pipe_manager.dart';
+import 'package:flappybirdapp/components/score.dart';
 import 'package:flappybirdapp/constants.dart';
 import 'package:flutter/material.dart';
+import 'components/pipe.dart';
 
 class FlappyBirdGame extends FlameGame with TapDetector, HasCollisionDetection {
   /* 
@@ -25,6 +26,7 @@ class FlappyBirdGame extends FlameGame with TapDetector, HasCollisionDetection {
   late Background background;
   late Ground ground;
   late PipeManager pipeManager;
+  late ScoreText scoreText;
 
   /*
   
@@ -49,11 +51,27 @@ class FlappyBirdGame extends FlameGame with TapDetector, HasCollisionDetection {
     // load pipes
     pipeManager = PipeManager();
     add(pipeManager);
+
+    // load score
+    scoreText = ScoreText();
+    add(scoreText);
   }
 
   @override
   void onTap() {
     bird.flap();
+  }
+
+  /*
+  
+  SCORE 
+
+  */
+
+  int score = 0;
+
+  void incrementScore() {
+    score += 1;
   }
 
   /*
@@ -76,25 +94,33 @@ class FlappyBirdGame extends FlameGame with TapDetector, HasCollisionDetection {
       context: buildContext!,
       builder: (context) => AlertDialog(
         title: const Text("Game Over"),
+        content: Text("High Score: $score"), // показываем текущий счет
         actions: [
           TextButton(
             onPressed: () {
               // pop box
               Navigator.pop(context);
 
-              // reset Game
+              // reset game
+              resetGame(); // вызываем resetGame для перезапуска игры
             },
             child: const Text("Restart"),
-          )
+          ),
         ],
       ),
     );
   }
 
   void resetGame() {
-    bird.position = Vector2(birdStartX, birdStartY);
-    bird.velocity = 0;
-    isGameOver = false;
+    bird.position = Vector2(birdStartX, birdStartY); // сбросить позицию птицы
+    bird.velocity = 0; // сбросить скорость
+    score = 0; // сбросить счет
+    isGameOver = false; // сбросить статус Game Over
+
+    // Удалить все трубы
+    children.whereType<Pipe>().forEach((Pipe pipe) => pipe.removeFromParent());
+
+    // Возобновить игру
     resumeEngine();
   }
 }

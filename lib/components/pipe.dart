@@ -9,6 +9,9 @@ class Pipe extends SpriteComponent
   // determine if the pipe is top or bottom
   final bool isTopPipe;
 
+  // score
+  bool scored = false;
+
   // init
   Pipe(Vector2 position, Vector2 size, {required this.isTopPipe})
       : super(position: position, size: size);
@@ -21,14 +24,14 @@ class Pipe extends SpriteComponent
 
   @override
   FutureOr<void> onLoad() async {
-    // load sprite image 
+    // load sprite image
     sprite = await Sprite.load(isTopPipe ? 'pipe_top.png' : 'pipe_bottom.png');
 
-    // add hit box for collison 
+    // add hit box for collison
     add(RectangleHitbox());
   }
 
-    /* 
+  /* 
   
   UPDATE
 
@@ -36,10 +39,20 @@ class Pipe extends SpriteComponent
 
   @override
   void update(double dt) {
-    // scroll pipe to left 
+    // scroll pipe to left
     position.x -= groundScrollingSpeed * dt;
 
-    // remove pipe if it goes off the screen 
+    // check it the bird has passed this pipe
+    if (!scored && position.x + size.x < gameRef.bird.position.x) {
+      scored = true;
+
+      // only increment for the pipes to avoid double counting
+      if (isTopPipe) {
+        gameRef.incrementScore();
+      }
+    }
+
+    // remove pipe if it goes off the screen
     if (position.x + size.x <= 0) {
       removeFromParent();
     }
